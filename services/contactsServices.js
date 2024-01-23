@@ -1,16 +1,13 @@
 import { promises as fs } from "fs";
+import path from "path";
 
-const contactsPath = "../db/contacts.json";
+const contactsPath = path.resolve("db", "contacts.json");
+console.log(contactsPath);
 
-async function listContacts() {
-  try {
-    const readResult = await fs.readFile(contactsPath);
-    // console.log.table(readResult);
-    return JSON.parse(readResult);
-  } catch (err) {
-    return [];
-  }
-}
+const listContacts = async (req, res) => {
+  const path = await fs.readFile(contactsPath);
+  return JSON.parse(path);
+};
 
 async function getContactById(contactId) {
   try {

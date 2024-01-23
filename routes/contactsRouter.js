@@ -9,14 +9,7 @@ import {
 
 const contactsRouter = express.Router();
 
-contactsRouter.get("/", async (req, res, next) => {
-  try {
-    const contacts = await listContactsAll();
-    res.status(200).json(contacts);
-  } catch (error) {
-    next(error);
-  }
-});
+contactsRouter.get("/", listContactsAll);
 
 contactsRouter.get("/:id", getOneContact);
 

@@ -6,18 +6,13 @@ import contactsRouter from "./routes/contactsRouter.js";
 
 const app = express();
 
-//MIDDLEWARES ----------------------------
+const tiny = app.get("env") === "development" ? "dev" : "short";
 
-app.use(morgan("tiny"));
+app.use(morgan(tiny));
 app.use(cors());
 app.use(express.json());
 
-//Controlers
-
-// const contactsPath = "/api/v1";
 app.use("/api/contacts", contactsRouter);
-
-//global custom middleware
 
 app.use((_, res) => {
   res.status(404).json({ message: "Route not found" });
@@ -28,8 +23,8 @@ app.use((err, req, res, next) => {
   res.status(status).json({ message });
 });
 
-const port = 3000;
+const PORT = process.env.PORT || 3000;
 
-app.listen(port, () => {
-  console.log(`Server is running. Use our API on port ${port}`);
+app.listen(PORT, () => {
+  console.log(`Server is running. Use our API on port ${PORT}`);
 });
