@@ -6,7 +6,9 @@ import contactsRouter from "./routes/contactsRouter.js";
 
 const app = express();
 
-app.use(morgan("tiny"));
+const tiny = app.get("env") === "development" ? "dev" : "short";
+
+app.use(morgan(tiny));
 app.use(cors());
 app.use(express.json());
 
@@ -21,6 +23,8 @@ app.use((err, req, res, next) => {
   res.status(status).json({ message });
 });
 
-app.listen(3000, () => {
-  console.log("Server is running. Use our API on port: 3000");
+const PORT = process.env.PORT || 3000;
+
+app.listen(PORT, () => {
+  console.log(`Server is running. Use our API on port ${PORT}`);
 });
