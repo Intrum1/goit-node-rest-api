@@ -29,7 +29,7 @@ async function removeContact(contactId) {
     if (!removedContact) return null;
 
     const updatedContacts = contacts.filter(
-      (contact) => contact.id !== contactId,
+      (contact) => contact.id !== contactId
     );
     await fs.writeFile(contactsPath, JSON.stringify(updatedContacts, null, 2));
     return removedContact;
@@ -58,7 +58,7 @@ async function updateContactService(id, name, email, phone) {
     const contacts = JSON.parse(data);
 
     const existingContactIndex = contacts.findIndex(
-      (contact) => contact.id === id,
+      (contact) => contact.id === id
     );
 
     if (existingContactIndex === -1) {

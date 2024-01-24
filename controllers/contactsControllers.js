@@ -1,3 +1,4 @@
+import { HttpError } from "../helpers/HttpError.js";
 import {
   listContacts,
   getContactById,
@@ -66,7 +67,8 @@ export const updateContact = async (req, res) => {
   if (error) {
     return res.status(400).json({ message: error.message });
   }
-  const updatedContact = updateContactService(id, name, email, phone);
+
+  const updatedContact = await updateContactService(id, name, email, phone);
 
   if (updatedContact) {
     res.status(200).json(updatedContact);
