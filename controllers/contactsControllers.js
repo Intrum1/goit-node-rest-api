@@ -1,10 +1,10 @@
-import { HttpError } from "../helpers/HttpError.js";
 import {
   listContacts,
   getContactById,
   removeContact,
   addContact,
   updateContactService,
+  updateStatusContact,
 } from "../services/contactsServices.js";
 
 import {
@@ -74,5 +74,29 @@ export const updateContact = async (req, res) => {
     res.status(200).json(updatedContact);
   } else {
     res.status(404).json({ message: "Not found" });
+  }
+};
+
+export const patchdateContact = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { favorite } = req.body;
+
+    if (typeof favorite !== "boolean") {
+      return res
+        .status(400)
+        .json({ message: "Favorite must be a boolean value" });
+    }
+
+    const updatedContact = await updateStatusContact(id, favorite);
+
+    if (updatedContact) {
+      res.status(200).json(updatedContact);
+    } else {
+      res.status(404).json({ message: "Not found" });
+    }
+  } catch (error) {
+    console.error(`Error updating contact status: ${error}`);
+    res.status(500).json({ message: "Server error" });
   }
 };
