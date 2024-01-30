@@ -9,18 +9,18 @@ const listContacts = async () => {
   }
 };
 
-async function getContactById(contactId) {
+async function getContactById(id) {
   try {
-    const contact = await Contact.findById(contactId);
+    const contact = await Contact.findById(id);
     return contact || null;
   } catch (error) {
     return null;
   }
 }
 
-async function removeContact(contactId) {
+async function removeContact(id) {
   try {
-    const removedContact = await Contact.findByIdAndRemove(contactId);
+    const removedContact = await Contact.findByIdAndDelete(id);
     return removedContact || null;
   } catch (error) {
     return null;
@@ -56,10 +56,10 @@ async function updateContactService(id, name, email, phone) {
   }
 }
 
-async function updateStatusContact(contactId, favorite) {
+async function updateStatusContact(id, favorite) {
   try {
     const updatedContact = await Contact.findByIdAndUpdate(
-      contactId,
+      id,
       { favorite },
       { new: true },
     );
