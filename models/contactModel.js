@@ -8,8 +8,6 @@ const contactSchema = new Schema(
     },
     email: {
       type: String,
-      required: [true, "Email is required"],
-      unique: true,
     },
     phone: {
       type: String,
@@ -18,11 +16,12 @@ const contactSchema = new Schema(
       type: Boolean,
       default: false,
     },
+    owner: {
+      type: Schema.Types.ObjectId,
+      ref: "user",
+    },
   },
-  {
-    timestamps: true,
-    versionKey: false,
-  },
+  { versionKey: false, timestamps: true },
 );
 
 const Contact = model("Contact", contactSchema);
