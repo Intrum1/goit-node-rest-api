@@ -1,9 +1,9 @@
 import dotenv from "dotenv";
-import { User } from "../models/userModel.js";
+dotenv.config();
+import { User } from "../models/user.js";
 import HttpError from "../helpers/HttpError.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-dotenv.config();
 
 const { SECRET_KEY } = process.env;
 
@@ -15,7 +15,7 @@ export const register = async (req, res, next) => {
     if (user) {
       throw HttpError(409, "Email in use");
     }
-    const hasPassword = await bcrypt.hash(password, 8);
+    const hasPassword = await bcrypt.hash(password, 10);
 
     const newUser = await User.create({ ...req.body, password: hasPassword });
 
@@ -43,11 +43,9 @@ export const login = async (req, res, next) => {
     if (!passwordCompare) {
       throw HttpError(401, "Email or password is wrong");
     }
-
     const payload = {
       id: user._id,
     };
-
     const token = jwt.sign(payload, SECRET_KEY, { expiresIn: "23h" });
 
     await User.findByIdAndUpdate(user._id, { token });
@@ -62,7 +60,6 @@ export const login = async (req, res, next) => {
     next(error);
   }
 };
-
 export const getCurrent = async (req, res, next) => {
   try {
     const { email, subscription } = req.user;
@@ -83,14 +80,4 @@ export const logout = async (req, res, next) => {
   } catch (error) {
     next(error);
   }
-};
-
-export const updateSubscription = async (req, res) => {
-  const { _id } = req.user;
-  const { subscription } = req.body;
-
-  await User.findByIdAndUpdate(_id, { subscription });
-  res.json({
-    message: "Subscription has been updated successfully",
-  });
 };

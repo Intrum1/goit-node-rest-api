@@ -4,7 +4,7 @@ import cors from "cors";
 import dotenv from "dotenv";
 
 import contactsRouter from "./routes/contactsRouter.js";
-import authRouter from "./routes/authRouter.js";
+import authRouter from "./routes/auth.js";
 
 dotenv.config();
 

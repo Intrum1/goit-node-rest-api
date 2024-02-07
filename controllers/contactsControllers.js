@@ -1,7 +1,7 @@
-import { Contact } from "../models/contactModel.js";
 import HttpError from "../helpers/HttpError.js";
+import { Contact } from "../models/contact.js";
 
-export const listContactsAll = async (req, res, next) => {
+export const getAllContacts = async (req, res, next) => {
   try {
     const { _id: owner } = req.user;
     const { page = 1, limit = 20 } = req.query;
@@ -16,33 +16,39 @@ export const listContactsAll = async (req, res, next) => {
   }
 };
 
-export const getOneContact = async (req, res) => {
-  const { _id: owner } = req.user;
-  const { id } = req.params;
-  const result = await Contact.findById(id).where("owner").equals(owner);
+export const getContactById = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const { _id: owner } = req.user;
+    const result = await Contact.findById(id).where("owner").equals(owner);
+    if (!result) {
+      throw HttpError(404, "Not found");
+    }
 
-  if (!result) {
-    throw HttpError(404, "Not Found");
+    res.json(result);
+  } catch (error) {
+    next(error);
   }
-
-  res.json(result);
 };
 
-export const deleteContact = async (req, res) => {
-  const { _id: owner } = req.user;
-  const { id } = req.params;
-  const result = await Contact.findByIdAndDelete(id)
-    .where("owner")
-    .equals(owner);
+export const deleteContact = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const { _id: owner } = req.user;
+    const result = await Contact.findByIdAndDelete(id)
+      .where("owner")
+      .equals(owner);
 
-  if (!result) {
-    throw HttpError(404, "Not Found");
+    if (!result) {
+      throw HttpError(404, "Not found");
+    }
+    return res.json(result);
+  } catch (error) {
+    next(error);
   }
-
-  res.json({ message: "Deleted successfully" });
 };
 
-export const createContact = async (req, res) => {
+export const createContact = async (req, res, next) => {
   try {
     const { _id: owner } = req.user;
     const result = await Contact.create({ ...req.body, owner });
@@ -52,7 +58,7 @@ export const createContact = async (req, res) => {
   }
 };
 
-export const updateContact = async (req, res) => {
+export const updateContact = async (req, res, next) => {
   try {
     const keys = Object.keys(req.body);
 
@@ -75,7 +81,7 @@ export const updateContact = async (req, res) => {
   }
 };
 
-export const patchdateContact = async (req, res) => {
+export const updateFavorite = async (req, res, next) => {
   try {
     const keys = Object.keys(req.body);
 
