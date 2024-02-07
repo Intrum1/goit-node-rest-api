@@ -2,20 +2,18 @@ import { Contact } from "../models/contactModel.js";
 import HttpError from "../helpers/HttpError.js";
 
 export const listContactsAll = async (req, res, next) => {
-  const { _id: owner } = req.user;
-  const { page = 1, limit = 20, favorite } = req.query;
-  const skip = (page - 1) * limit;
-
-  const isFavorite = favorite === "true";
-  const result = await Contact.find(
-    { owner, favorite: isFavorite },
-    "-createdAt -updatedAt",
-    {
+  try {
+    const { _id: owner } = req.user;
+    const { page = 1, limit = 20 } = req.query;
+    const skip = (page - 1) * limit;
+    const result = await Contact.find({ owner }, "name email phone favorite", {
       skip,
       limit,
-    },
-  ).populate("owner", "email");
-  res.json(result);
+    }).populate("owner", "email subscription");
+    res.status(200).json(result);
+  } catch (error) {
+    next(error);
+  }
 };
 
 export const getOneContact = async (req, res) => {
