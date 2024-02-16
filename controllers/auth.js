@@ -2,14 +2,16 @@ import dotenv from "dotenv";
 dotenv.config();
 import { User } from "../models/user.js";
 import HttpError from "../helpers/HttpError.js";
+import sendEmail from "../helpers/sendEmail.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import gravatar from "gravatar";
 import path from "path";
 import fs from "fs/promises";
 import Jimp from "jimp";
+import { v4 as uuidv4 } from "uuid";
 
-const { SECRET_KEY } = process.env;
+const { SECRET_KEY, BASE_URL } = process.env;
 const avatarsDir = path.resolve("public", "avatars");
 
 export const register = async (req, res, next) => {
@@ -22,12 +24,21 @@ export const register = async (req, res, next) => {
     }
     const hasPassword = await bcrypt.hash(password, 10);
     const avatarURL = gravatar.url(email);
+    const verificationCode = uuidv4();
 
     const newUser = await User.create({
       ...req.body,
       password: hasPassword,
       avatarURL,
+      verificationCode,
     });
+    const verifyEmail = {
+      to: email,
+      subject: "Verify email",
+      html: `<a target="_blank" href="${BASE_URL}/api/verify/${verificationCode}">Click verify email</a>`,
+    };
+
+    await sendEmail(verifyEmail);
 
     res.status(201).json({
       user: {
