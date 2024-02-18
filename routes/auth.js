@@ -21,7 +21,7 @@ const authRouter = express.Router();
 
 authRouter.post("/register", validateBody(registerSchema), register);
 authRouter.get("/verify/:verificationCode", verifyEmail);
-authRouter.post("verify", validateBody(emailSchema), resendVerifyEmail);
+authRouter.post("/verify", validateBody(emailSchema), resendVerifyEmail);
 authRouter.post("/login", validateBody(loginSchema), login);
 authRouter.get("/current", authenticate, getCurrent);
 authRouter.post("/logout", authenticate, logout);
